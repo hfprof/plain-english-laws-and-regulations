@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plain English Rules - Federal Law &amp; Regulation Translator</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary: #1a56db;
+    --primary-hover: #1444b0;
+    --bg: #f8f9fb;
+    --surface: #ffffff;
+    --border: #e2e6ed;
+    --text: #1f2937;
+    --text-secondary: #6b7280;
+    --accent: #f0f4ff;
+    --danger: #dc2626;
+    --success: #16a34a;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: var(--primary);
+    color: white;
+    padding: 1.5rem 2rem;
+    text-align: center;
+  }
+  .header h1 { font-size: 1.75rem; font-weight: 700; }
+  .header p { opacity: 0.85; margin-top: 0.25rem; font-size: 0.95rem; }
+
+  /* Main layout */
+  .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+
+  /* Settings bar */
+  .settings-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow);
+  }
+  .settings-toggle {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    user-select: none;
+  }
+  .settings-toggle .arrow { transition: transform 0.2s; display: inline-block; }
+  .settings-toggle .arrow.open { transform: rotate(90deg); }
+  .settings-body { margin-top: 0.75rem; display: none; }
+  .settings-body.open { display: block; }
+  .api-key-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .api-key-row label { font-size: 0.85rem; font-weight: 500; white-space: nowrap; }
+  .api-key-row input {
+    flex: 1;
+    min-width: 250px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+  }
+  .api-key-row .status {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .api-key-row .status.saved { background: #dcfce7; color: var(--success); }
+  .api-key-row .status.missing { background: #fef2f2; color: var(--danger); }
+
+  /* Search section */
+  .search-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow);
+  }
+  .search-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .field { display: flex; flex-direction: column; gap: 0.3rem; }
+  .field label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.03em; }
+  .field input, .field select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    background: white;
+  }
+  .field.grow { flex: 1; min-width: 200px; }
+  .source-tabs {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .source-tabs button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+  }
+  .source-tabs button.active { background: var(--primary); color: white; }
+  .source-tabs button:not(.active):hover { background: var(--accent); }
+
+  .filters-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+  }
+
+  .btn {
+    padding: 0.55rem 1.25rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--primary-hover); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-secondary {
+    background: white;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+  }
+  .btn-secondary:hover { background: var(--accent); }
+
+  /* Results */
+  .results-section { margin-bottom: 1.25rem; }
+  .results-header {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+  }
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-shadow: var(--shadow);
+  }
+  .result-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(26,86,219,0.1); }
+  .result-card .title { font-weight: 600; font-size: 1rem; color: var(--primary); }
+  .result-card .meta { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+  .result-card .snippet { font-size: 0.88rem; margin-top: 0.4rem; color: var(--text); }
+  .result-card .snippet mark { background: #fef08a; padding: 0 2px; border-radius: 2px; }
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .badge-rule { background: #dcfce7; color: #15803d; }
+  .badge-proposed { background: #fef3c7; color: #a16207; }
+  .badge-notice { background: #e0e7ff; color: #4338ca; }
+  .badge-presidential { background: #fce7f3; color: #be185d; }
+  .badge-regulation { background: #f0f4ff; color: var(--primary); }
+
+  .pagination {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  /* Detail view */
+  .detail-section {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .detail-section.visible { display: block; }
+  .detail-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    background: var(--accent);
+  }
+  .detail-header h2 { font-size: 1.1rem; flex: 1; }
+  .detail-body { display: flex; min-height: 300px; }
+  .detail-original, .detail-translation {
+    flex: 1;
+    padding: 1.25rem;
+    overflow-y: auto;
+    max-height: 70vh;
+  }
+  .detail-original { border-right: 1px solid var(--border); }
+  .detail-translation { background: #fafbfd; }
+  .pane-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+  }
+  .legal-text {
+    font-size: 0.9rem;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .plain-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+  .plain-text h3 { margin: 1rem 0 0.4rem; font-size: 1rem; color: var(--primary); }
+  .plain-text ul { margin: 0.5rem 0 0.5rem 1.25rem; }
+  .plain-text li { margin-bottom: 0.3rem; }
+  .plain-text p { margin-bottom: 0.6rem; }
+
+  .placeholder-msg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  /* Spinner */
+  .spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2.5px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .error-msg {
+    background: #fef2f2;
+    color: var(--danger);
+    border: 1px solid #fecaca;
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    font-size: 0.88rem;
+    margin-top: 0.75rem;
+  }
+
+  /* Suggestions */
+  .suggestions-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+  }
+  .suggestions-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+  }
+  .suggestions-chips {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .chip {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    background: var(--accent);
+    border: 1px solid #c7d7fe;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    color: var(--primary);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .chip:hover { background: var(--primary); color: white; }
+
+  /* Keyword highlight */
+  .snippet mark {
+    background: #fef08a;
+    padding: 0 2px;
+    border-radius: 2px;
+    color: inherit;
+  }
+
+  /* Result hierarchy */
+  .result-hierarchy {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.2rem;
+  }
+
+  /* Directions */
+  .directions {
+    background: var(--accent);
+    border: 1px solid #c7d7fe;
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .directions-title {
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+  .directions-steps {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container { padding: 1rem; }
+    .detail-body { flex-direction: column; }
+    .detail-original { border-right: none; border-bottom: 1px solid var(--border); max-height: 40vh; }
+    .detail-translation { max-height: 40vh; }
+    .search-row, .filters-row { flex-direction: column; align-items: stretch; }
+    .field.grow { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Plain English Rules</h1>
+  <p>Search federal laws &amp; regulations and translate them into plain, understandable English</p>
+</div>
+
+<div class="container">
+
+  <!-- Directions -->
+  <div class="directions">
+    <div class="directions-title">How to use</div>
+    <div class="directions-steps">
+      <div class="step"><span class="step-num">1</span> Choose an AI provider below, enter your API key, and click <strong>Save Key</strong></div>
+      <div class="step"><span class="step-num">2</span> Search for a law or regulation by keyword</div>
+      <div class="step"><span class="step-num">3</span> Click a result to view the full text, then translate to plain English</div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="settings-bar">
+    <div class="settings-toggle" onclick="toggleSettings()">
+      <span class="arrow" id="settingsArrow">&#9654;</span>
+      <span>AI Provider Settings</span>
+      <span class="status" id="keyStatus"></span>
+    </div>
+    <div class="settings-body" id="settingsBody">
+      <div class="api-key-row">
+        <label for="providerSelect">Provider:</label>
+        <select id="providerSelect" onchange="onProviderChange()" style="padding:0.5rem 0.75rem; border:1px solid var(--border); border-radius:var(--radius); font-size:0.9rem;">
+          <option value="groq">Groq (Free - no credit card)</option>
+          <option value="cerebras">Cerebras (Free - no credit card)</option>
+          <option value="openrouter">OpenRouter (Free models available)</option>
+          <option value="openai">OpenAI (Paid)</option>
+        </select>
+      </div>
+      <div class="api-key-row" style="margin-top:0.5rem;">
+        <label for="apiKey">API Key:</label>
+        <input type="password" id="apiKey" placeholder="" onkeydown="if(event.key==='Enter')saveApiKey()">
+        <button class="btn" onclick="saveApiKey()" id="saveKeyBtn" style="padding:0.5rem 1rem; font-size:0.85rem;">Save Key</button>
+        <button class="btn btn-secondary" onclick="toggleKeyVisibility()" style="padding:0.5rem 0.75rem; font-size:0.8rem;">Show</button>
+      </div>
+      <p style="font-size:0.78rem; color:var(--text-secondary); margin-top:0.5rem;" id="providerHelp"></p>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-section">
+    <div class="search-row">
+      <div class="field">
+        <label>Source</label>
+        <div class="source-tabs">
+          <button class="active" id="srcRegulations" onclick="setSource('regulations')">Regulations (CFR)</button>
+          <button id="srcFedReg" onclick="setSource('federal_register')">Federal Register</button>
+        </div>
+      </div>
+      <div class="field grow">
+        <label>Search</label>
+        <input type="text" id="searchInput" placeholder="e.g. clean water, overtime pay, food labeling..." onkeydown="if(event.key==='Enter')doSearch()">
+      </div>
+      <button class="btn" onclick="doSearch()" id="searchBtn">Search</button>
+    </div>
+    <div class="filters-row">
+      <div class="field">
+        <label>From Date</label>
+        <input type="date" id="dateFrom">
+      </div>
+      <div class="field">
+        <label>To Date</label>
+        <input type="date" id="dateTo">
+      </div>
+      <div class="field" id="statusFilterField">
+        <label>Document Type</label>
+        <select id="statusFilter">
+          <option value="">All Types</option>
+          <option value="RULE">Final Rules (Passed)</option>
+          <option value="PRRULE">Proposed Rules</option>
+          <option value="NOTICE">Notices</option>
+          <option value="PRESDOCU">Presidential Documents</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div id="errorArea"></div>
+
+  <!-- Suggestions -->
+  <div id="suggestionsArea" style="display:none;"></div>
+
+  <!-- Results -->
+  <div class="results-section" id="resultsSection" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:0.5rem;">
+      <div class="results-header" id="resultsHeader" style="margin-bottom:0;"></div>
+      <div id="sortOrderField" style="display:flex; align-items:center; gap:0.5rem;">
+        <label for="sortOrder" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); white-space:nowrap;">Sort:</label>
+        <select id="sortOrder" onchange="doSearch()" style="padding:0.35rem 0.6rem; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; background:white;">
+          <option value="relevance">Relevance</option>
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+        </select>
+      </div>
+    </div>
+    <div id="resultsList"></div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <!-- Detail -->
+  <div class="detail-section" id="detailSection">
+    <div class="detail-header">
+      <h2 id="detailTitle">Document</h2>
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <button class="btn" onclick="translateText()" id="translateBtn">Translate to Plain English</button>
+        <button class="btn btn-secondary" onclick="closeDetail()">Close</button>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-original" id="detailOriginal">
+        <div class="pane-label">Original Legal Text</div>
+        <div class="legal-text" id="legalText"></div>
+      </div>
+      <div class="detail-translation" id="detailTranslation">
+        <div class="pane-label">Plain English Translation</div>
+        <div class="plain-text" id="plainText">
+          <div class="placeholder-msg">Click "Translate to Plain English" to generate a simplified version of this text.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ---- State ----
+  let currentSource = 'regulations';
+  let currentPage = 1;
+  let currentQuery = '';
+  let currentResults = [];
+  let currentFullText = '';
+
+  // ---- Provider config ----
+  const PROVIDERS = {
+    groq: {
+      name: 'Groq',
+      url: 'https://api.groq.com/openai/v1/chat/completions',
+      model: 'llama-3.3-70b-versatile',
+      placeholder: 'gsk_...',
+      help: 'Free, no credit card required. <a href="https://console.groq.com/keys" target="_blank">Get a free Groq API key</a>',
+      keyPrefix: 'groq_api_key'
+    },
+    cerebras: {
+      name: 'Cerebras',
+      url: 'https://api.cerebras.ai/v1/chat/completions',
+      model: 'llama-3.3-70b',
+      placeholder: 'csk-...',
+      help: 'Free, 1M tokens/day, no credit card. <a href="https://cloud.cerebras.ai/" target="_blank">Get a free Cerebras API key</a>',
+      keyPrefix: 'cerebras_api_key'
+    },
+    openrouter: {
+      name: 'OpenRouter',
+      url: 'https://openrouter.ai/api/v1/chat/completions',
+      model: 'google/gemma-4-26b-a4b-it:free',
+      fallbackModels: ['arcee-ai/trinity-large-preview:free', 'google/gemma-4-31b-it:free', 'nvidia/nemotron-3-super-120b-a12b:free'],
+      placeholder: 'sk-or-...',
+      help: 'Free models available, 200 req/day. Auto-retries other free models if one is busy. <a href="https://openrouter.ai/keys" target="_blank">Get a free OpenRouter API key</a>',
+      keyPrefix: 'openrouter_api_key'
+    },
+    openai: {
+      name: 'OpenAI',
+      url: 'https://api.openai.com/v1/chat/completions',
+      model: 'gpt-4o-mini',
+      placeholder: 'sk-...',
+      help: 'Paid, requires billing. <a href="https://platform.openai.com/api-keys" target="_blank">Get an OpenAI API key</a>',
+      keyPrefix: 'openai_api_key'
+    }
+  };
+
+  function getProvider() {
+    return document.getElementById('providerSelect').value;
+  }
+
+  function getProviderConfig() {
+    return PROVIDERS[getProvider()];
+  }
+
+  // ---- Settings ----
+  function toggleSettings() {
+    const body = document.getElementById('settingsBody');
+    const arrow = document.getElementById('settingsArrow');
+    body.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+
+  function onProviderChange() {
+    const config = getProviderConfig();
+    document.getElementById('apiKey').placeholder = config.placeholder;
+    document.getElementById('providerHelp').innerHTML =
+      'Your key is stored locally and only sent to ' + config.name + ' for translations. ' + config.help;
+    // Load saved key for this provider
+    const saved = localStorage.getItem(config.keyPrefix);
+    document.getElementById('apiKey').value = saved || '';
+    localStorage.setItem('selected_provider', getProvider());
+    updateKeyStatus();
+  }
+
+  function saveApiKey() {
+    const config = getProviderConfig();
+    const key = document.getElementById('apiKey').value.trim();
+    if (key) {
+      localStorage.setItem(config.keyPrefix, key);
+    } else {
+      localStorage.removeItem(config.keyPrefix);
+    }
+    updateKeyStatus();
+    // Flash the save button to confirm
+    const btn = document.getElementById('saveKeyBtn');
+    if (key) {
+      btn.textContent = 'Saved!';
+      btn.style.background = 'var(--success)';
+      setTimeout(() => { btn.textContent = 'Save Key'; btn.style.background = ''; }, 1500);
+    }
+  }
+
+  function updateKeyStatus() {
+    const config = getProviderConfig();
+    const key = localStorage.getItem(config.keyPrefix);
+    const el = document.getElementById('keyStatus');
+    if (key) {
+      el.className = 'status saved';
+      el.textContent = config.name + ' key saved';
+    } else {
+      el.className = 'status missing';
+      el.textContent = 'No key set';
+    }
+  }
+
+  function toggleKeyVisibility() {
+    const input = document.getElementById('apiKey');
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+
+  // Init provider and key from storage
+  (function initSettings() {
+    const saved = localStorage.getItem('selected_provider');
+    if (saved && PROVIDERS[saved]) {
+      document.getElementById('providerSelect').value = saved;
+    }
+    onProviderChange();
+  })();
+
+  // ---- Source Toggle ----
+  function setSource(src) {
+    currentSource = src;
+    document.getElementById('srcRegulations').classList.toggle('active', src === 'regulations');
+    document.getElementById('srcFedReg').classList.toggle('active', src === 'federal_register');
+    // Show/hide filters only available for Federal Register
+    const isFedReg = src === 'federal_register';
+    document.getElementById('statusFilterField').style.display = isFedReg ? '' : 'none';
+    document.getElementById('sortOrderField').style.display = isFedReg ? '' : 'none';
+  }
+  // Init (hide Federal Register-only filters on load)
+  document.getElementById('statusFilterField').style.display = 'none';
+  document.getElementById('sortOrderField').style.display = 'none';
+
+  // ---- Search ----
+  async function doSearch(page = 1) {
+    const query = document.getElementById('searchInput').value.trim();
+    if (!query) return;
+    currentQuery = query;
+    currentPage = page;
+
+    const searchBtn = document.getElementById('searchBtn');
+    searchBtn.disabled = true;
+    searchBtn.innerHTML = '<span class="spinner"></span> Searching...';
+    clearError();
+    closeDetail();
+
+    try {
+      if (currentSource === 'regulations') {
+        await searchECFR(query, page);
+      } else {
+        await searchFederalRegister(query, page);
+      }
+      // Fetch keyword suggestions in background (only on first page)
+      if (page === 1) fetchSuggestions(query);
+    } catch (err) {
+      showError('Search failed: ' + err.message);
+      document.getElementById('resultsSection').style.display = 'none';
+    } finally {
+      searchBtn.disabled = false;
+      searchBtn.textContent = 'Search';
+    }
+  }
+
+  // ---- eCFR Search ----
+  async function searchECFR(query, page) {
+    const perPage = 20;
+    const params = new URLSearchParams({
+      query: query,
+      per_page: perPage,
+      page: page
+    });
+
+    const dateFrom = document.getElementById('dateFrom').value;
+    const dateTo = document.getElementById('dateTo').value;
+    if (dateFrom) params.append('last_modified_after', dateFrom);
+    if (dateTo) params.append('last_modified_before', dateTo);
+    // eCFR search API does not support custom sort order
+
+    const url = `https://www.ecfr.gov/api/search/v1/results?${params}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`eCFR API returned ${resp.status}`);
+    const data = await resp.json();
+
+    const results = (data.results || []).map(r => ({
+      id: r.hierarchy_headings ? `${r.hierarchy_headings.title || ''}-${r.hierarchy_headings.section || ''}` : '',
+      title: stripHtml(r.headings ? (r.headings.section || r.headings.part || r.headings.title || 'Untitled') : (r.hierarchy_headings?.section || 'Untitled')),
+      citation: buildCFRCitation(r.hierarchy_headings),
+      hierarchy: buildCFRHierarchy(r.hierarchy_headings, r.headings),
+      snippet: r.snippet || r.full_text_excerpt || '',
+      type: 'regulation',
+      date: r.last_modified || '',
+      raw: r
+    }));
+
+    currentResults = results;
+    const total = data.meta?.total_count || data.total_count || results.length;
+    renderResults(results, total, page, perPage);
+  }
+
+  function buildCFRCitation(h) {
+    if (!h) return '';
+    const parts = [];
+    if (h.title) parts.push(`${h.title} CFR`);
+    if (h.part) parts.push(`Part ${h.part}`);
+    if (h.section) parts.push(`\u00A7 ${h.section}`);
+    return parts.join(' ');
+  }
+
+  function buildCFRHierarchy(h, headings) {
+    if (!h) return '';
+    const parts = [];
+    if (h.title) parts.push(h.title.trim() + (headings?.title ? ' \u2013 ' + stripHtml(headings.title) : ''));
+    if (h.chapter) parts.push(h.chapter.trim());
+    if (h.subchapter) parts.push(h.subchapter.trim());
+    if (h.part) parts.push(h.part.trim() + (headings?.part ? ' \u2013 ' + stripHtml(headings.part) : ''));
+    return parts.join(' > ');
+  }
+
+  // ---- Federal Register Search ----
+  async function searchFederalRegister(query, page) {
+    const perPage = 20;
+    const params = new URLSearchParams({
+      'conditions[term]': query,
+      per_page: perPage,
+      page: page,
+      order: 'relevance'
+    });
+
+    const dateFrom = document.getElementById('dateFrom').value;
+    const dateTo = document.getElementById('dateTo').value;
+    const docType = document.getElementById('statusFilter').value;
+    const sortOrder = document.getElementById('sortOrder').value;
+
+    if (dateFrom) params.append('conditions[publication_date][gte]', dateFrom);
+    if (dateTo) params.append('conditions[publication_date][lte]', dateTo);
+    if (docType) params.append('conditions[type][]', docType);
+    if (sortOrder === 'newest') params.set('order', 'newest');
+    else if (sortOrder === 'oldest') params.set('order', 'oldest');
+
+    const url = `https://www.federalregister.gov/api/v1/documents.json?${params}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`Federal Register API returned ${resp.status}`);
+    const data = await resp.json();
+
+    const results = (data.results || []).map(r => ({
+      id: r.document_number || '',
+      title: r.title || 'Untitled',
+      citation: `${r.volume || ''} FR ${r.start_page || ''}`,
+      snippet: r.abstract || r.excerpt || '',
+      type: mapDocType(r.type),
+      date: r.publication_date || '',
+      effectiveDate: r.effective_on || '',
+      agencies: (r.agencies || []).map(a => a.name).join(', '),
+      fullTextUrl: r.full_text_xml_url || r.body_html_url || '',
+      htmlUrl: r.html_url || '',
+      raw: r
+    }));
+
+    currentResults = results;
+    const total = data.count || results.length;
+    renderResults(results, total, page, perPage);
+  }
+
+  function mapDocType(type) {
+    const map = { 'Rule': 'rule', 'Proposed Rule': 'proposed', 'Notice': 'notice', 'Presidential Document': 'presidential' };
+    return map[type] || 'regulation';
+  }
+
+  // ---- Render Results ----
+  function renderResults(results, total, page, perPage) {
+    const section = document.getElementById('resultsSection');
+    const header = document.getElementById('resultsHeader');
+    const list = document.getElementById('resultsList');
+    const pag = document.getElementById('pagination');
+
+    if (results.length === 0) {
+      section.style.display = 'block';
+      header.textContent = 'No results found. Try different keywords or adjust filters.';
+      list.innerHTML = '';
+      pag.innerHTML = '';
+      return;
+    }
+
+    section.style.display = 'block';
+    const from = (page - 1) * perPage + 1;
+    const to = from + results.length - 1;
+    header.textContent = `Showing ${from}\u2013${to} of ${total.toLocaleString()} results`;
+
+    list.innerHTML = results.map((r, i) => `
+      <div class="result-card" onclick="openResult(${i})">
+        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <span class="badge badge-${r.type}">${badgeLabel(r.type)}</span>
+          ${r.agencies ? `<span style="font-size:0.8rem; font-weight:600; color:var(--text-secondary);">${escHtml(r.agencies)}</span>` : ''}
+          <span class="title">${escHtml(r.title)}</span>
+        </div>
+        ${r.hierarchy ? `<div class="result-hierarchy">${escHtml(r.hierarchy)}</div>` : ''}
+        <div class="meta">
+          ${r.citation ? `<span>${escHtml(r.citation)}</span>` : ''}
+          ${r.date ? `<span>Published: ${escHtml(r.date)}</span>` : ''}
+          ${r.effectiveDate ? `<span>Effective: ${escHtml(r.effectiveDate)}</span>` : ''}
+        </div>
+        ${r.snippet ? `<div class="snippet">${highlightKeywords(stripHtml(r.snippet), currentQuery)}</div>` : ''}
+      </div>
+    `).join('');
+
+    // Pagination
+    const totalPages = Math.ceil(total / perPage);
+    if (totalPages > 1) {
+      let pagHtml = '';
+      if (page > 1) pagHtml += `<button class="btn btn-secondary" onclick="doSearch(${page - 1})">&laquo; Prev</button>`;
+      pagHtml += `<span style="padding:0.5rem 0.75rem; font-size:0.85rem; color:var(--text-secondary);">Page ${page} of ${totalPages}</span>`;
+      if (page < totalPages) pagHtml += `<button class="btn btn-secondary" onclick="doSearch(${page + 1})">Next &raquo;</button>`;
+      pag.innerHTML = pagHtml;
+    } else {
+      pag.innerHTML = '';
+    }
+  }
+
+  function badgeLabel(type) {
+    const map = { rule: 'Final Rule', proposed: 'Proposed Rule', notice: 'Notice', presidential: 'Presidential', regulation: 'Regulation' };
+    return map[type] || type;
+  }
+
+  // ---- Open Result ----
+  async function openResult(index) {
+    const r = currentResults[index];
+    if (!r) return;
+
+    const section = document.getElementById('detailSection');
+    const title = document.getElementById('detailTitle');
+    const legalEl = document.getElementById('legalText');
+    const plainEl = document.getElementById('plainText');
+
+    title.textContent = r.title;
+    plainEl.innerHTML = '<div class="placeholder-msg">Click "Translate to Plain English" to generate a simplified version.</div>';
+    section.classList.add('visible');
+    legalEl.innerHTML = '<div class="loading-overlay"><span class="spinner"></span> Loading full text...</div>';
+
+    // Scroll to detail
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    try {
+      let text = '';
+      if (currentSource === 'regulations') {
+        text = await fetchECFRFullText(r.raw);
+      } else {
+        text = await fetchFedRegFullText(r);
+      }
+      currentFullText = text;
+      legalEl.textContent = text || 'Full text not available for this document.';
+    } catch (err) {
+      legalEl.innerHTML = `<div class="error-msg">Could not load full text: ${escHtml(err.message)}</div>`;
+      currentFullText = '';
+    }
+  }
+
+  async function fetchECFRFullText(raw) {
+    // Try to build a direct URL to the section
+    const h = raw.hierarchy_headings || raw.hierarchy || {};
+    if (h.title && h.section) {
+      const url = `https://www.ecfr.gov/api/versioner/v1/full/${new Date().toISOString().slice(0,10)}/title-${h.title}.xml?section=${h.section}`;
+      try {
+        const resp = await fetch(url);
+        if (resp.ok) {
+          const xml = await resp.text();
+          return extractTextFromXML(xml);
+        }
+      } catch (_) {}
+    }
+    // Fallback: use the snippet/excerpt
+    return stripHtml(raw.full_text_excerpt || raw.snippet || raw.starts_on?.join('\n') || 'Full text not available. Try viewing this regulation on ecfr.gov.');
+  }
+
+  async function fetchFedRegFullText(result) {
+    // Try body_html_url first
+    if (result.raw.body_html_url) {
+      try {
+        const resp = await fetch(result.raw.body_html_url);
+        if (resp.ok) {
+          const html = await resp.text();
+          return extractTextFromHTML(html);
+        }
+      } catch (_) {}
+    }
+    // Try raw_text_url
+    if (result.raw.raw_text_url) {
+      try {
+        const resp = await fetch(result.raw.raw_text_url);
+        if (resp.ok) return await resp.text();
+      } catch (_) {}
+    }
+    // Fallback
+    return result.raw.abstract || result.snippet || 'Full text not available. View on federalregister.gov.';
+  }
+
+  function extractTextFromXML(xml) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xml, 'text/xml');
+    return doc.documentElement.textContent.replace(/\s+/g, ' ').trim();
+  }
+
+  function extractTextFromHTML(html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    // Remove script/style
+    doc.querySelectorAll('script, style').forEach(el => el.remove());
+    return doc.body.textContent.replace(/\s+/g, ' ').trim();
+  }
+
+  // ---- Translation Cache ----
+  function getCacheKey(text) {
+    // Simple hash of first 200 chars for cache key
+    let hash = 0;
+    const str = text.slice(0, 200);
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return 'translation_' + Math.abs(hash);
+  }
+
+  function getCachedTranslation(text) {
+    try {
+      const key = getCacheKey(text);
+      const cached = localStorage.getItem(key);
+      if (cached) {
+        const data = JSON.parse(cached);
+        // Expire after 7 days
+        if (Date.now() - data.timestamp < 7 * 24 * 60 * 60 * 1000) {
+          return data.html;
+        }
+        localStorage.removeItem(key);
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  function cacheTranslation(text, html) {
+    try {
+      const key = getCacheKey(text);
+      localStorage.setItem(key, JSON.stringify({ html, timestamp: Date.now() }));
+    } catch (_) {} // localStorage full, ignore
+  }
+
+  // ---- AI Translation ----
+  const SYSTEM_PROMPT = `You are a legal translator that converts complex federal laws and regulations into plain, easy-to-understand English. Your goal is to make the law accessible to everyday people.
+
+Rules:
+- Use simple, everyday language (8th grade reading level)
+- Break down complex sentences into shorter ones
+- Define any legal or technical terms in parentheses the first time they appear
+- Use bullet points for lists of requirements or conditions
+- Start with a brief "In a nutshell" summary (2-3 sentences)
+- Then provide the detailed plain English version
+- Highlight who this affects, what they must/must not do, and any penalties or deadlines
+- Use headers to organize sections
+- If something is ambiguous, note it clearly
+- Format your response in HTML using <h3>, <p>, <ul>, <li> tags`;
+
+  async function translateText() {
+    const config = getProviderConfig();
+    const apiKey = localStorage.getItem(config.keyPrefix);
+    if (!apiKey) {
+      showError('Please set your ' + config.name + ' API key in the settings above.');
+      return;
+    }
+    if (!currentFullText) {
+      showError('No text available to translate.');
+      return;
+    }
+
+    const btn = document.getElementById('translateBtn');
+    const plainEl = document.getElementById('plainText');
+
+    // Check cache first
+    const cached = getCachedTranslation(currentFullText);
+    if (cached) {
+      plainEl.innerHTML = cached + '<p style="font-size:0.75rem; color:var(--text-secondary); margin-top:1rem; font-style:italic;">Loaded from cache. Click translate again to get a fresh translation.</p>';
+      // Remove cache so next click fetches fresh
+      localStorage.removeItem(getCacheKey(currentFullText));
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Translating...';
+    plainEl.innerHTML = '<div class="loading-overlay"><span class="spinner"></span> Translating via ' + escHtml(config.name) + '...</div>';
+
+    // Truncate very long texts to stay within token limits
+    const textToTranslate = currentFullText.length > 12000 ? currentFullText.slice(0, 12000) + '\n\n[Text truncated for translation...]' : currentFullText;
+
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      };
+
+      const modelsToTry = [config.model, ...(config.fallbackModels || [])];
+      let translation = null;
+      let lastError = '';
+
+      for (const model of modelsToTry) {
+        if (modelsToTry.length > 1) {
+          plainEl.innerHTML = '<div class="loading-overlay"><span class="spinner"></span> Trying ' + escHtml(model.split('/').pop()) + '...</div>';
+        }
+
+        const response = await fetch(config.url, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: 'system', content: SYSTEM_PROMPT },
+              { role: 'user', content: `Please translate this federal regulation/law into plain English:\n\n${textToTranslate}` }
+            ],
+            temperature: 0.3,
+            max_tokens: 2000,
+            stream: false
+          })
+        });
+
+        // Parse response - handle whitespace-padded responses from some providers
+        const rawText = await response.text();
+        const data = JSON.parse(rawText.trim());
+
+        if (!response.ok || data.error) {
+          lastError = data.error?.metadata?.raw
+            || data.error?.message
+            || (typeof data.error === 'string' ? data.error : null)
+            || `API error ${response.status}`;
+          if (modelsToTry.indexOf(model) < modelsToTry.length - 1) continue;
+          throw new Error(lastError);
+        }
+        translation = data.choices?.[0]?.message?.content || null;
+        if (translation) break;
+      }
+
+      if (!translation) throw new Error('No translation generated from any model.');
+
+      // Render HTML if the model returned HTML tags, otherwise convert markdown
+      let html;
+      if (translation.includes('<h3>') || translation.includes('<p>') || translation.includes('<ul>')) {
+        html = translation;
+      } else {
+        html = translation.split('\n').map(line => {
+          if (line.startsWith('###')) return `<h3>${escHtml(line.replace(/^#+\s*/, ''))}</h3>`;
+          if (line.startsWith('**')) return `<p><strong>${escHtml(line.replace(/\*\*/g, ''))}</strong></p>`;
+          if (line.startsWith('- ')) return `<li>${escHtml(line.slice(2))}</li>`;
+          if (line.trim()) return `<p>${escHtml(line)}</p>`;
+          return '';
+        }).join('');
+      }
+
+      plainEl.innerHTML = html;
+      // Cache the result
+      cacheTranslation(currentFullText, html);
+    } catch (err) {
+      plainEl.innerHTML = `<div class="error-msg">Translation failed: ${escHtml(err.message)}</div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Translate to Plain English';
+    }
+  }
+
+  // ---- Detail close ----
+  function closeDetail() {
+    document.getElementById('detailSection').classList.remove('visible');
+    currentFullText = '';
+  }
+
+  // ---- Error handling ----
+  function showError(msg) {
+    document.getElementById('errorArea').innerHTML = `<div class="error-msg">${escHtml(msg)}</div>`;
+  }
+  function clearError() {
+    document.getElementById('errorArea').innerHTML = '';
+  }
+
+  // ---- Util ----
+  function escHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function stripHtml(str) {
+    const d = document.createElement('div');
+    d.innerHTML = str;
+    return d.textContent || d.innerText || '';
+  }
+
+  function highlightKeywords(text, query) {
+    if (!query) return escHtml(text);
+    const escaped = escHtml(text);
+    const words = query.split(/\s+/).filter(w => w.length > 2);
+    if (words.length === 0) return escaped;
+    const pattern = words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+    return escaped.replace(new RegExp(`(${pattern})`, 'gi'), '<mark>$1</mark>');
+  }
+
+  // ---- Keyword Suggestions ----
+  async function fetchSuggestions(query) {
+    const config = getProviderConfig();
+    const apiKey = localStorage.getItem(config.keyPrefix);
+    if (!apiKey) return; // No key, skip suggestions silently
+
+    const area = document.getElementById('suggestionsArea');
+    area.style.display = 'block';
+    area.innerHTML = '<div class="suggestions-bar"><div class="suggestions-label">Suggested searches</div><div class="suggestions-chips"><span style="font-size:0.82rem; color:var(--text-secondary);">Loading suggestions...</span></div></div>';
+
+    try {
+      const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` };
+      const modelsToTry = [config.model, ...(config.fallbackModels || [])];
+      let result = null;
+
+      for (const model of modelsToTry) {
+        const response = await fetch(config.url, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            model,
+            messages: [{
+              role: 'user',
+              content: `Given someone searching for "${query}" in US federal regulations, suggest 5 more specific search queries they might want. Return ONLY a JSON array of strings, nothing else. Example: ["query 1","query 2","query 3","query 4","query 5"]`
+            }],
+            temperature: 0.5,
+            max_tokens: 200,
+            stream: false
+          })
+        });
+        const rawText = await response.text();
+        const data = JSON.parse(rawText.trim());
+        if (data.error) continue;
+        result = data.choices?.[0]?.message?.content;
+        if (result) break;
+      }
+
+      if (!result) { area.style.display = 'none'; return; }
+
+      // Parse JSON array from response
+      const match = result.match(/\[[\s\S]*\]/);
+      if (!match) { area.style.display = 'none'; return; }
+      const suggestions = JSON.parse(match[0]).slice(0, 5);
+
+      area.innerHTML = `<div class="suggestions-bar">
+        <div class="suggestions-label">Narrow your search</div>
+        <div class="suggestions-chips">
+          ${suggestions.map(s => `<span class="chip" onclick="searchSuggestion(this)">${escHtml(s)}</span>`).join('')}
+        </div>
+      </div>`;
+    } catch (_) {
+      area.style.display = 'none';
+    }
+  }
+
+  function searchSuggestion(el) {
+    document.getElementById('searchInput').value = el.textContent;
+    doSearch();
+  }
+</script>
+</body>
+</html>
