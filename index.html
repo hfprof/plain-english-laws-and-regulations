@@ -511,6 +511,7 @@
           <option value="newest">Newest First</option>
           <option value="oldest">Oldest First</option>
         </select>
+        <span id="sortNote" style="font-size:0.75rem; color:var(--text-secondary); font-style:italic;"></span>
       </div>
     </div>
     <div id="resultsList"></div>
@@ -665,14 +666,18 @@
     currentSource = src;
     document.getElementById('srcRegulations').classList.toggle('active', src === 'regulations');
     document.getElementById('srcFedReg').classList.toggle('active', src === 'federal_register');
-    // Show/hide filters only available for Federal Register
     const isFedReg = src === 'federal_register';
     document.getElementById('statusFilterField').style.display = isFedReg ? '' : 'none';
-    document.getElementById('sortOrderField').style.display = isFedReg ? '' : 'none';
+    // Sort: always visible, but disabled for eCFR which doesn't support it
+    const sortEl = document.getElementById('sortOrder');
+    const sortNote = document.getElementById('sortNote');
+    sortEl.disabled = !isFedReg;
+    sortEl.style.opacity = isFedReg ? '1' : '0.45';
+    sortNote.textContent = isFedReg ? '' : '(Federal Register only)';
+    if (!isFedReg) sortEl.value = 'relevance';
   }
-  // Init (hide Federal Register-only filters on load)
-  document.getElementById('statusFilterField').style.display = 'none';
-  document.getElementById('sortOrderField').style.display = 'none';
+  // Init source state
+  setSource('regulations');
 
   // ---- Search ----
   async function doSearch(page = 1) {
